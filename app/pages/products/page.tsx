@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getProducts } from "../../lib/api";
+import { getProducts } from "../../../lib/api"; // Ensure getProducts function is properly set up
+import Link from "next/link";
 
 interface Product {
   id: number;
@@ -15,14 +16,16 @@ interface Product {
 const ProductsPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null); // Added error state
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const data = await getProducts();
+        const data = await getProducts(); // Fetch products from API
         setProducts(data);
       } catch (error) {
         console.error("Failed to fetch products", error);
+        setError("Failed to load products. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -39,6 +42,8 @@ const ProductsPage = () => {
             <div key={index} className="animate-pulse bg-gray-300 h-72 rounded-lg"></div>
           ))}
         </div>
+      ) : error ? ( // Display error message if API call fails
+        <div className="text-center text-red-600">{error}</div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {products.map((product) => (
@@ -62,12 +67,16 @@ const ProductsPage = () => {
                 >
                   {product.stock > 0 ? `In Stock (${product.stock})` : "Out of Stock"}
                 </p>
-                <button
-                  className={`mt-4 w-full py-2 rounded-lg text-white transition-all ${product.stock > 0 ? "bg-black hover:bg-gray-800" : "bg-gray-400 cursor-not-allowed"}`}
-                  disabled={product.stock === 0}
-                >
-                  {product.stock > 0 ? "Buy Now" : "Sold Out"}
-                </button>
+                <Link href={`/pages/product/${product.id}`}> {/* Fixed Link Path */}
+                  <button
+                    className={`mt-4 w-full py-2 rounded-lg text-white transition-all ${
+                      product.stock > 0 ? "bg-black hover:bg-gray-800" : "bg-gray-400 cursor-not-allowed"
+                    }`}
+                    disabled={product.stock === 0}
+                  >
+                    {product.stock > 0 ? "Buy Now" : "Sold Out"}
+                  </button>
+                </Link>
               </div>
             </div>
           ))}

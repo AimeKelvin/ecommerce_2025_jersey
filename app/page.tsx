@@ -80,7 +80,7 @@ const Hero = () => {
         <p className="text-5xl md:text-7xl z-50 font-calendas italic font-bold">
           The KitNation.
         </p>
-        <Link href="/products">
+        <Link href="/pages/products">
         <p className="text-xs z-50 hover:scale-110 transition-transform bg-black text-white rounded-full py-2 w-20 cursor-pointer">
           Shop Now
         </p>
